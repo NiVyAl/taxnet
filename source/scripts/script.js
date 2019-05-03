@@ -17,30 +17,6 @@ function loadJSON(path, success, error)
     xhr.send();
 };
 
-/* */
-//var filmsContainer = document.querySelector(".films-container");
-//var k = 0; // количество выведенных фильмов
-/*
-var parse = function(data) {
-  for (var i = 0; i < 5; i++) { // создание элементов
-    var film = document.createElement("div");
-    filmsContainer.appendChild(film);
-    film.className = "films-container__item film";
-    film.innerHTML = "<p class='film__text'></p><button class='film__favourite-button favourite-button'></button>";
-  }
-  var filmText = document.querySelectorAll(".film__text");
-  
-  for (var i = k; i < k+5; i++) { // наполнение названиями фильмов
-    filmText[i].innerHTML = data[i].title;
-  };
-  k = i;
-} */
-/*
-loadJSON('jsons/films.json', function(data) { // загрузка первых пяти
-    parse(data);
-  }
-); */
-
 /* кнопка загрузить еще */
 var writeFilmAmount = 5;
 
@@ -68,7 +44,7 @@ var search = function(data, letter) {
       }
       if (j == (letter.length - 1)) {
         if (findFilmAmout < writeFilmAmount) {
-          writeFilm(data[i].title);
+          writeFilm(data[i].title, i);
         }; 
         
         if (findFilmAmout >= writeFilmAmount) {
@@ -78,19 +54,22 @@ var search = function(data, letter) {
       }
     }
   }
-  
-  //console.log("массив: " + moreFilms);
-  //console.log("----------------------");
 }
 
 var filmsContainer = document.querySelector(".films-container");
 
-var writeFilm = function(filmInf) {
-  //console.log(filmInf);
+var writeFilm = function(filmInf, number) {
   var film = document.createElement("div");
   filmsContainer.appendChild(film);
   film.className = "films-container__item film";
-  film.innerHTML = "<p class='film__text'></p><button class='film__favourite-button favourite-button'></button>";
+  
+  for (var i = 0; i < favouritesNumbers.length; i++) {
+    if (number == favouritesNumbers[i]) {
+      film.classList.add("film--favourite");
+    };  
+  };
+  
+  film.innerHTML = "<p class='film__text'></p><button class='film__favourite-button favourite-button' onclick='addFavourite(" + number + ")'></button>";
   var filmText = film.querySelector(".film__text");
   filmText.innerHTML = filmInf;
 }
@@ -105,4 +84,18 @@ input.oninput = function() {
   loadJSON('jsons/films.json', function(data) {
   search(data, input.value);
 });
+}
+
+
+/* добавление в избранное */
+var favouritesNumbers = [];
+favouritesNumbers = localStorage.getItem("favourite").split(",")
+
+var addFavourite = function(number) {
+  favouritesNumbers.push(number);
+  loadJSON('jsons/films.json', function(data) {
+    search(data, input.value);
+  });
+  localStorage.setItem("favourite", favouritesNumbers);
+  console.log(favouritesNumbers);
 }

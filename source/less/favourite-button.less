@@ -6,8 +6,24 @@
   padding: 0;
   cursor: pointer;
   margin: 0;
+  position: relative;
 }
 
 .favourite-button:hover {
   background-color: lightgray;
+}
+
+.favourite-button::before {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid black;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  border-radius: 50%;
 }
