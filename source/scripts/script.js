@@ -58,18 +58,23 @@ var search = function(data, letter) {
 
 var filmsContainer = document.querySelector(".films-container");
 
-var writeFilm = function(filmInf, number) {
+var writeFilm = function(filmInf, number, isMark) {
   var film = document.createElement("div");
   filmsContainer.appendChild(film);
   film.className = "films-container__item film";
   
-  for (var i = 0; i < favouritesNumbers.length; i++) {
+  for (var i = 0; i < favouritesNumbers.length; i++) { // изменение цвета кнопки "добавить в избранное"
     if (number == favouritesNumbers[i]) {
       film.classList.add("film--favourite");
     };  
   };
   
-  film.innerHTML = "<p class='film__text'></p><button class='film__favourite-button favourite-button' onclick='addFavourite(" + number + ")'></button>";
+  if (isMark) {
+    film.innerHTML = "<p class='film__text'></p><button class='film__favourite-button favourite-button' onclick='addFavourite(" + number + ", true)'></button>";  
+  } else {
+    film.innerHTML = "<p class='film__text'></p><button class='film__favourite-button favourite-button' onclick='addFavourite(" + number + ")'></button>";
+  }
+
   var filmText = film.querySelector(".film__text");
   filmText.innerHTML = filmInf;
 }
@@ -89,13 +94,63 @@ input.oninput = function() {
 
 /* добавление в избранное */
 var favouritesNumbers = [];
-favouritesNumbers = localStorage.getItem("favourite").split(",")
+if (localStorage.getItem("favourite")) {
+  favouritesNumbers = localStorage.getItem("favourite").split(",")
+}
 
-var addFavourite = function(number) {
-  favouritesNumbers.push(number);
+var addFavourite = function(number, isMark) { // запускается при нажатии на кнопку "добавить в избранное"
+  var isFavourite = false
+  for (var i = 0; i < favouritesNumbers.length; i++) {
+      if (favouritesNumbers[i] == number) {
+        isFavourite = true;
+        favouritesNumbers.splice(i, 1);
+      }
+  };
+  
+  if (isFavourite == false) {
+    favouritesNumbers.push(number); 
+  };
+  
+  loadJSON('jsons/films.json', function(data) {
+      if (isMark) {
+        writeFavourite(data);
+      } else {
+        search(data, input.value);  
+      }
+    });
+  localStorage.setItem("favourite", favouritesNumbers); 
+}
+
+
+/* закладки */
+
+var markButton = document.querySelector("#markButton"); // кнопка закладки
+markButton.onclick = function() {
+  markButton.classList.add("switch--selected");
+  filmButton.classList.remove("switch--selected");
+  input.classList.add("visual-hidden");
+  
+  loadJSON('jsons/films.json', function(data) {
+    writeFavourite(data);
+  });
+}
+
+var writeFavourite = function(data) {
+  filmsContainer.innerHTML = " ";
+  for (var i = 0; i < favouritesNumbers.length; i++) {
+    writeFilm(data[favouritesNumbers[i]].title, favouritesNumbers[i], true);
+  }
+}
+
+
+var filmButton = document.querySelector("#filmButton");
+filmButton.onclick = function() {
+  filmButton.classList.add("switch--selected");
+  markButton.classList.remove("switch--selected");
+  filmsContainer.innerHTML = " ";
+  
+  input.classList.remove("visual-hidden");
   loadJSON('jsons/films.json', function(data) {
     search(data, input.value);
   });
-  localStorage.setItem("favourite", favouritesNumbers);
-  console.log(favouritesNumbers);
 }
