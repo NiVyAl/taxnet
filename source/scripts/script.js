@@ -37,20 +37,41 @@ var search = function(data, letter) {
   var findFilmAmout = 0; 
   moreFilms = [];
   
-  for (var i = 0; i < data.length; i++){ 
+  for (var i = 0; i < data.length; i++) {
+    
     for (var j = 0; j < letter.length; j++) {
       if (data[i].title[j].toUpperCase() != letter[j].toUpperCase()) { // выводит ошибку когда введен пробел в названии "тачки 3", но поиск работает 
         break;
       }
       if (j == (letter.length - 1)) {
-        if (findFilmAmout < writeFilmAmount) {
-          writeFilm(data[i].title, i);
-        }; 
-        
-        if (findFilmAmout >= writeFilmAmount) {
-          moreFilms.push(data[i].title);
+
+        if (tagsSelected.length > 0) {  // выбраны ли теги
+          for (var k = 0; k < tagsSelected.length; k++) { 
+            for (var c = 0; c < data[i].tags.length; c++) {
+              if (tagsSelected[k] == data[i].tags[c]) {
+                
+                if (findFilmAmout < writeFilmAmount) {
+                  writeFilm(data[i].title, i);
+                }; 
+
+                if (findFilmAmout >= writeFilmAmount) {
+                  moreFilms.push(data[i].title);
+                }
+                findFilmAmout++;
+              } 
+            } 
+          };
+        } else {
+          if (findFilmAmout < writeFilmAmount) { // вывод без тегов
+            writeFilm(data[i].title, i);
+          }; 
+
+          if (findFilmAmout >= writeFilmAmount) {
+            moreFilms.push(data[i].title);
+          }
+          findFilmAmout++;
         }
-        findFilmAmout++;
+        
       }
     }
   }
@@ -153,4 +174,72 @@ filmButton.onclick = function() {
   loadJSON('jsons/films.json', function(data) {
     search(data, input.value);
   });
+}
+
+
+/* теги */
+var tagsContainer = document.querySelector(".tags-container");
+loadJSON('jsons/tags.json', function(data) { //выводим первые пять тегов
+    for (var i = 0; i < 5; i++) { 
+      writeTag(data[i], i);
+    }
+  });
+
+var tagsMoreButton = document.querySelector(".tags-container__button"); 
+var isMoreTags = false;
+tagsMoreButton.onclick = function() {  //вывод всех тегов
+  if (isMoreTags) {
+    isMoreTags = false;
+    tagsMoreButton.innerHTML = "Показать все теги";
+  } else {
+    isMoreTags = true;
+    tagsMoreButton.innerHTML = "Скрыть часть тегов";
+    loadJSON('jsons/tags.json', function(data) {
+      for (var i = 5; i < data.length; i++) { 
+        writeTag(data[i], i);
+      }
+    });  
+  }
+}
+
+var writeTag = function(tag, number) {
+  var checkbox = document.createElement("input");
+  tagsContainer.appendChild(checkbox);
+  checkbox.className = "visual-hidden";
+  checkbox.type = "checkbox";
+  checkbox.id = "tag" + number;
+  
+  checkbox.onclick = function() { // выбор тега
+    loadJSON('jsons/films.json', function(data) {
+      search(data, input.value);
+    });
+    if (checkbox.checked == true) {
+      tagSelect(tag, number, true);
+    };
+    if (checkbox.checked == false) {
+      tagSelect(tag, number, false);
+    };
+  };
+  
+  var label = document.createElement("label");
+  tagsContainer.appendChild(label)
+  label.className = "tag";
+  label.classList.add("tags-container__item");
+  label.htmlFor = "tag" + number;
+  label.innerHTML = tag;
+}
+
+
+var tagsSelected = [];
+var tagSelect = function(tagName, numberTag, isSelect) {
+  if (isSelect) {
+    tagsSelected.push(tagName);
+  } else {
+    for(var i = 0; i < tagsSelected.length; i++) {
+      if (tagsSelected[i] == tagName) {
+        tagsSelected.splice(i, 1);  
+      };
+    };
+  }
+  console.log(tagsSelected);
 }

@@ -1,10 +1,24 @@
 .tag {
-  width: 100px;
-  height: 30px;
+  min-width: 100px;
+  //height: 30px;
+  padding: 8px 5px;
+  //line-height: 30px;
   text-transform: capitalize;
   background-color: transparent;
   border: 1px solid black;
   font-size: 15px;
   cursor: pointer;
   color: black;
+  display: inline-block;
+  text-align: center;
+  margin: 10px;
+  margin-top: 0;
 }
+
+#tag0:checked ~ label[for="tag0"],
+#tag1:checked ~ label[for="tag1"],
+#tag2:checked ~ label[for="tag2"],
+#tag3:checked ~ label[for="tag3"],
+#tag4:checked ~ label[for="tag4"] {
+  background-color: lightgray;
+} 
