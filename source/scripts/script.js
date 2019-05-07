@@ -19,23 +19,33 @@ function loadJSON(path, success, error)
 
 /* кнопка загрузить еще */
 var writeFilmAmount = 5;
+var writenFilmsAmount = writeFilmAmount;
 
 var buttonMore = document.querySelector(".button-more");
 buttonMore.onclick = function(){
-  for (var i = 0; i < moreFilms.length; i++) {
-    writeFilm(moreFilms[i]);  
+  if ((films.length - writenFilmsAmount) > writeFilmAmount) {
+    for (var i = writenFilmsAmount; i < writenFilmsAmount+writeFilmAmount; i++) {
+      films[i].classList.remove("visual-hidden");
+    }
+    writenFilmsAmount = writenFilmsAmount + writeFilmAmount
+  } else {
+    for (var i = writenFilmsAmount; i < films.length; i++) {
+      films[i].classList.remove("visual-hidden");
+    }
+    writenFilmsAmount = films.length;
+    buttonMore.classList.add("visual-hidden");
   };
-  moreFilms = [];
 };
 /* */
 
 
 /* поиск */
-var moreFilms = [];
+var films;
 var search = function(data, letter) {
+  writenFilmsAmount = writeFilmAmount; // количество выведенных
   cleanFilmList();
   var findFilmAmout = 0; 
-  moreFilms = [];
+
   
   for (var i = 0; i < data.length; i++) {
     
@@ -45,37 +55,38 @@ var search = function(data, letter) {
       }
       if (j == (letter.length - 1)) {
 
-        if (tagsSelected.length > 0) {  // выбраны ли теги
-          for (var k = 0; k < tagsSelected.length; k++) { 
+        if (tagsSelected.length > 0) {        // выбраны ли теги
+          var tagsFind = 0;
+          for (var k = 0; k < tagsSelected.length; k++) {
             for (var c = 0; c < data[i].tags.length; c++) {
               if (tagsSelected[k] == data[i].tags[c]) {
-                
-                if (findFilmAmout < writeFilmAmount) {
-                  writeFilm(data[i].title, i);
-                }; 
-
-                if (findFilmAmout >= writeFilmAmount) {
-                  moreFilms.push(data[i].title);
-                }
-                findFilmAmout++;
+                tagsFind++;
               } 
             } 
           };
-        } else {
-          if (findFilmAmout < writeFilmAmount) { // вывод без тегов
+          if (tagsFind == tagsSelected.length) {
             writeFilm(data[i].title, i);
-          }; 
-
-          if (findFilmAmout >= writeFilmAmount) {
-            moreFilms.push(data[i].title);
+            findFilmAmout++;
           }
+        } else {
+          writeFilm(data[i].title, i);
           findFilmAmout++;
         }
         
       }
     }
   }
+  if (findFilmAmout > writeFilmAmount) {
+    buttonMore.classList.remove("visual-hidden");
+    films = document.querySelectorAll(".film")
+    for (var i = writeFilmAmount; i < films.length; i++) {
+      films[i].classList.add("visual-hidden");
+    }
+  } else {
+    buttonMore.classList.add("visual-hidden");
+  }
 }
+
 
 var filmsContainer = document.querySelector(".films-container");
 
@@ -147,6 +158,7 @@ var addFavourite = function(number, isMark) { // запускается при �
 
 var markButton = document.querySelector("#markButton"); // кнопка закладки
 markButton.onclick = function() {
+  tagsContainer.classList.add("visual-hidden");
   markButton.classList.add("switch--selected");
   filmButton.classList.remove("switch--selected");
   input.classList.add("visual-hidden");
@@ -157,18 +169,30 @@ markButton.onclick = function() {
 }
 
 var writeFavourite = function(data) {
-  filmsContainer.innerHTML = " ";
+  writenFilmsAmount = writeFilmAmount;
+  cleanFilmList();
   for (var i = 0; i < favouritesNumbers.length; i++) {
     writeFilm(data[favouritesNumbers[i]].title, favouritesNumbers[i], true);
+  }
+  
+  if (favouritesNumbers.length > writeFilmAmount) { // вывод только первых пятнадцати
+    buttonMore.classList.remove("visual-hidden");
+    films = document.querySelectorAll(".film")
+    for (var i = writeFilmAmount; i < films.length; i++) {
+      films[i].classList.add("visual-hidden");
+    }
+  } else {
+    buttonMore.classList.add("visual-hidden");
   }
 }
 
 
 var filmButton = document.querySelector("#filmButton");
 filmButton.onclick = function() {
+  tagsContainer.classList.remove("visual-hidden");
   filmButton.classList.add("switch--selected");
   markButton.classList.remove("switch--selected");
-  filmsContainer.innerHTML = " ";
+  cleanFilmList();
   
   input.classList.remove("visual-hidden");
   loadJSON('jsons/films.json', function(data) {
@@ -185,41 +209,39 @@ loadJSON('jsons/tags.json', function(data) { //выводим первые пя�
     }
   });
 
+var moreTagsContainer = [];
 var tagsMoreButton = document.querySelector(".tags-container__button"); 
 var isMoreTags = false;
 tagsMoreButton.onclick = function() {  //вывод всех тегов
   if (isMoreTags) {
     isMoreTags = false;
     tagsMoreButton.innerHTML = "Показать все теги";
+    for (var i = 0; i < moreTagsContainer.length; i++) {
+      moreTagsContainer[i].classList.add("visual-hidden");
+    }
   } else {
     isMoreTags = true;
     tagsMoreButton.innerHTML = "Скрыть часть тегов";
-    loadJSON('jsons/tags.json', function(data) {
-      for (var i = 5; i < data.length; i++) { 
-        writeTag(data[i], i);
+    if (moreTagsContainer.length > 0) {
+      for (var i = 0; i < moreTagsContainer.length; i++) {
+        moreTagsContainer[i].classList.remove("visual-hidden");
       }
-    });  
+    } else {
+      loadJSON('jsons/tags.json', function(data) {
+        for (var i = 5; i < data.length; i++) { 
+          writeTag(data[i], i, true);
+        }
+      });  
+    }
   }
 }
 
-var writeTag = function(tag, number) {
+var writeTag = function(tag, number, isMoreTags) {
   var checkbox = document.createElement("input");
   tagsContainer.appendChild(checkbox);
   checkbox.className = "visual-hidden";
   checkbox.type = "checkbox";
   checkbox.id = "tag" + number;
-  
-  checkbox.onclick = function() { // выбор тега
-    loadJSON('jsons/films.json', function(data) {
-      search(data, input.value);
-    });
-    if (checkbox.checked == true) {
-      tagSelect(tag, number, true);
-    };
-    if (checkbox.checked == false) {
-      tagSelect(tag, number, false);
-    };
-  };
   
   var label = document.createElement("label");
   tagsContainer.appendChild(label)
@@ -227,6 +249,24 @@ var writeTag = function(tag, number) {
   label.classList.add("tags-container__item");
   label.htmlFor = "tag" + number;
   label.innerHTML = tag;
+  
+  checkbox.onclick = function() { // выбор тега
+    loadJSON('jsons/films.json', function(data) {
+      search(data, input.value);
+    });
+    if (checkbox.checked == true) {
+      tagSelect(tag, number, true);
+      label.classList.add("tag--active");
+    };
+    if (checkbox.checked == false) {
+      tagSelect(tag, number, false);
+      label.classList.remove("tag--active");
+    };
+  };
+  
+  if (isMoreTags) {
+    moreTagsContainer.push(label); 
+  };
 }
 
 
@@ -241,5 +281,4 @@ var tagSelect = function(tagName, numberTag, isSelect) {
       };
     };
   }
-  console.log(tagsSelected);
 }
