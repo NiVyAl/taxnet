@@ -1,29 +1,26 @@
 .tag {
-  min-width: 100px;
-  //height: 30px;
-  padding: 8px 5px;
-  //line-height: 30px;
+  padding: 8px 15px;
   text-transform: capitalize;
   background-color: transparent;
-  border: 1px solid black;
+  border: 1px solid @light-gray;
   font-size: 15px;
   cursor: pointer;
-  color: black;
+  color: @gray;
   display: inline-block;
   text-align: center;
-  margin: 10px;
+  margin: 5px;
   margin-top: 0;
+  border-radius: 5px;
 }
 
 .tag--active {
-  background-color: lightgray;
+  //background-color: lightgray;
+  color: @main-color;
+  border-color: @main-color;
 }
-/*
-#tag0:checked ~ label[for="tag0"],
-#tag1:checked ~ label[for="tag1"],
-#tag2:checked ~ label[for="tag2"],
-#tag3:checked ~ label[for="tag3"],
-#tag4:checked ~ label[for="tag4"],
-#tag5:checked ~ label[for="tag5"] {
-  background-color: lightgray;
-} */
+
+.tag--button {
+  background-color: @main-color;
+  color: white;
+  border-color: @main-color;
+}

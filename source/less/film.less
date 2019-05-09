@@ -1,14 +1,18 @@
 .film {
-  display: block;
-  border: 1px solid black;
+  border-top: 1px solid @light-gray;
   width: 700px;
   //min-height: 50px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
+.film:first-child {
+  border-top: none;
+} 
+
 .film__text {
-  font-size: 20px;
+  font-size: 18px;
   margin: 0;
   padding: 20px;
   box-sizing: border-box;
@@ -16,9 +20,22 @@
 }
 
 .film__favourite-button {
-  min-width: 60px;
+  //min-width: 60px;
+}
+
+.film--favourite .film__favourite-button {
+  background-color: @main-color;
 }
 
 .film--favourite .film__favourite-button::before {
-  background-color: black;
+  //background-color: black;
+  transform: translate(3.5px, 0px) rotate(-45deg);
+  width: 18px;
+  background-color: white;
+}
+
+.film--favourite .film__favourite-button::after {
+  transform: translate(-6px, 2px) rotate(45deg);
+  width: 10px;
+  background-color: white;
 }

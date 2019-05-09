@@ -7,42 +7,25 @@
   </head>
   
   <body>
-    <div class="switches-container">
-      <button class="switch switch--selected switches-container__item" id="filmButton">Фильмы</button>
-      <button class="switch switches-container__item" id="markButton">Закладки</button>
-    </div>
-    
-    <input class="text-input" type="text" maxlength="60" id="searchText" placeholder="Поиск">
-    
-    <div class="tags-container">
-      <!--
-      <input id="tag0" type="checkbox" class="visual-hidden">
-      <input id="tag1" type="checkbox" class="visual-hidden">
-      <input id="tag2" type="checkbox" class="visual-hidden">
-      <input id="tag3" type="checkbox" class="visual-hidden">
-      <input id="tag4" type="checkbox" class="visual-hidden">
-  
-      <label for="tag0" class="tag tags-container__item">Драма</label>
-      <label for="tag1" class="tag tags-container__item">Мистика</label>
-      <label for="tag2" class="tag tags-container__item">Sci-Fi</label>
-      <label for="tag3" class="tag tags-container__item">Роботы</label>
-      <label for="tag4" class="tag tags-container__item">Преключения</label> -->
-      <button class="tags-container__button">Показать все теги</button>
-    </div>
-    
-    <div class="films-container"><!--
-      <div class="films-container__item film">
-        <p class="film__text">Название фильма</p>
-        <button class="film__favourite-button favourite-button"></button>
+    <div class="films">
+      <div class="switches-container">
+        <button class="switch switch--selected switches-container__item" id="filmButton">Фильмы</button>
+        <button class="switch switches-container__item" id="markButton">Закладки</button>
       </div>
-      
-      <div class="films-container__item film">
-        <p class="film__text">Название фильма</p>
-        <button class="film__favourite-button favourite-button" onclick="addFavourite()"></button> 
-      </div>  -->
-    </div> 
-    
-    <button class="button-more visual-hidden">Показать еще</button>
+
+      <div class="text-input-container">
+        <input class="text-input text-input-container__item" type="text" maxlength="60" id="searchText" placeholder="Поиск">
+        <!--<div class="lupa text-input-container__lupa"></div>-->
+      </div>
+
+      <div class="tags-container">
+        <button class="tag tag--button tags-container__button">Показать все теги</button>
+      </div>
+
+      <div class="films-container"></div> 
+
+      <button class="button-more visual-hidden">Показать еще</button>
+    </div>
     
     <script src="scripts/script.js"></script>
   </body>
