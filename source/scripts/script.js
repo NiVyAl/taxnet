@@ -41,8 +41,10 @@ buttonMore.onclick = function(){
 
 /* поиск */
 var films;
-var search = function(data, letter) {
-  writenFilmsAmount = writeFilmAmount; // количество выведенных
+var search = function(data, letter, isFromFavourite) {
+  if (!isFromFavourite) {  // если запушен после добавление в избранное
+    writenFilmsAmount = writeFilmAmount;
+  }
   cleanFilmList();
   var findFilmAmout = 0; 
 
@@ -76,10 +78,11 @@ var search = function(data, letter) {
       }
     }
   }
-  if (findFilmAmout > writeFilmAmount) {
+
+  if (findFilmAmout > writenFilmsAmount) { //writeFilmAmount
     buttonMore.classList.remove("visual-hidden");
     films = document.querySelectorAll(".film")
-    for (var i = writeFilmAmount; i < films.length; i++) {
+    for (var i = writenFilmsAmount; i < films.length; i++) {
       films[i].classList.add("visual-hidden");
     }
   } else {
@@ -145,9 +148,9 @@ var addFavourite = function(number, isMark) { // запускается при �
   
   loadJSON('jsons/films.json', function(data) {
       if (isMark) {
-        writeFavourite(data);
+        writeFavourite(data, true);
       } else {
-        search(data, input.value);  
+        search(data, input.value, true);  
       }
     });
   localStorage.setItem("favourite", favouritesNumbers); 
@@ -168,17 +171,19 @@ markButton.onclick = function() {
   });
 }
 
-var writeFavourite = function(data) {
-  writenFilmsAmount = writeFilmAmount;
+var writeFavourite = function(data, isFromFavourite) {
+  if (!isFromFavourite) {
+    writenFilmsAmount = writeFilmAmount;  
+  };
   cleanFilmList();
   for (var i = 0; i < favouritesNumbers.length; i++) {
     writeFilm(data[favouritesNumbers[i]].title, favouritesNumbers[i], true);
   }
   
-  if (favouritesNumbers.length > writeFilmAmount) { // вывод только первых пятнадцати
+  if (favouritesNumbers.length > writenFilmsAmount) { // вывод только первых пятнадцати
     buttonMore.classList.remove("visual-hidden");
     films = document.querySelectorAll(".film")
-    for (var i = writeFilmAmount; i < films.length; i++) {
+    for (var i = writenFilmsAmount; i < films.length; i++) {
       films[i].classList.add("visual-hidden");
     }
   } else {
@@ -187,7 +192,7 @@ var writeFavourite = function(data) {
 }
 
 
-var filmButton = document.querySelector("#filmButton");
+var filmButton = document.querySelector("#filmButton");// кнопка "фильмы"
 filmButton.onclick = function() {
   tagsContainer.classList.remove("visual-hidden");
   filmButton.classList.add("switch--selected");
@@ -215,13 +220,13 @@ var isMoreTags = false;
 tagsMoreButton.onclick = function() {  //вывод всех тегов
   if (isMoreTags) {
     isMoreTags = false;
-    tagsMoreButton.innerHTML = "Показать все теги";
+    tagsMoreButton.innerHTML = "Больше тегов";
     for (var i = 0; i < moreTagsContainer.length; i++) {
       moreTagsContainer[i].classList.add("visual-hidden");
     }
   } else {
     isMoreTags = true;
-    tagsMoreButton.innerHTML = "Скрыть часть тегов";
+    tagsMoreButton.innerHTML = "Меньше тегов";
     if (moreTagsContainer.length > 0) {
       for (var i = 0; i < moreTagsContainer.length; i++) {
         moreTagsContainer[i].classList.remove("visual-hidden");
