@@ -4,25 +4,27 @@
   font-size: 20px;
   background-color: transparent;
   border-radius: 5px;
-  //border: 1px solid @main-color;
   border: 1px solid @light-gray;
   text-transform: uppercase;
   cursor: pointer;
-  //color: @main-color;
   color: @gray;
   outline: none;
 }
 
 .switch:focus {
-  //background-color: @main-color-light;
   border: 2px solid @main-color;
 }
 
 .switch--selected {
-  //background-color: @main-color;
   border-color: @main-color;
-  //background-color: @light-gray;
   background-color: transparent;
-  //color: white;
   color: @main-color;
+}
+
+@media (max-width: 500px) {
+  .switch {
+    width: 150px;
+    height: 40px;
+    font-size: 18px;
+  }
 }

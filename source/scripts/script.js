@@ -52,7 +52,7 @@ var search = function(data, letter, isFromFavourite) {
   for (var i = 0; i < data.length; i++) {
     
     for (var j = 0; j < letter.length; j++) {
-      if (data[i].title[j].toUpperCase() != letter[j].toUpperCase()) { // выводит ошибку когда введен пробел в названии "тачки 3", но поиск работает 
+      if (data[i].title[j].toUpperCase() != letter[j].toUpperCase()) { 
         break;
       }
       if (j == (letter.length - 1)) {
