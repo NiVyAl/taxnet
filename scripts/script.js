@@ -18,7 +18,7 @@ function loadJSON(path, success, error)
 };
 
 /* кнопка загрузить еще */
-var writeFilmAmount = 5;
+var writeFilmAmount = 15;
 var writenFilmsAmount = writeFilmAmount;
 
 var buttonMore = document.querySelector(".button-more");
